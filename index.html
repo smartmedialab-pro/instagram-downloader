@@ -94,7 +94,7 @@
     #result-box {
       display: none;
       margin-top: 25px;
-      padding: 20px;
+      padding: 15px;
       background: #0f172a;
       border-radius: 12px;
       border: 1px solid #334155;
@@ -104,13 +104,13 @@
       text-decoration: none;
       background: #10b981;
       color: white;
-      padding: 14px 24px;
+      padding: 14px 28px;
       border-radius: 8px;
       font-weight: bold;
       font-size: 16px;
       cursor: pointer;
-      width: 100%;
       margin-top: 12px;
+      width: 100%;
     }
     .ad-slot {
       margin: 20px 0;
@@ -147,18 +147,15 @@
     <p class="sub">Reels, Video ba Profile DP link paste kore 100% free-te download korun</p>
 
     <div class="input-group">
-      <input type="text" id="insta-url" placeholder="Paste Instagram link here..." required>
+      <input type="text" id="insta-url" placeholder="Paste Instagram link here (e.g. https://www.instagram.com/reel/...)" required>
       <button type="button" class="btn-download" onclick="handleFetchMedia()">Download Now</button>
     </div>
 
     <div class="loader" id="loader"></div>
 
     <div id="result-box">
-      <div style="padding: 12px; background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; border-radius: 8px; color: #38bdf8; font-weight: bold; font-size: 15px;">
-        মিডিয়া প্রস্তুত হয়েছে!
-      </div>
-      <p style="color: #94a3b8; font-size: 13px; margin-top: 10px;">নিচের বাটনে চাপ দিয়ে সরাসরি আপনার ডিভাইসে সেভ করুন:</p>
-      <a href="#" id="download-link" class="btn-save" target="_blank">Download File (HD)</a>
+      <div id="media-container"></div>
+      <a href="#" id="download-link" class="btn-save" download="instagram_download" target="_blank">Download File Directly</a>
     </div>
   </div>
 
@@ -177,10 +174,11 @@
   </div>
 
   <script>
-    function handleFetchMedia() {
+    async function handleFetchMedia() {
       const urlInput = document.getElementById('insta-url').value.trim();
       const loader = document.getElementById('loader');
       const resultBox = document.getElementById('result-box');
+      const mediaContainer = document.getElementById('media-container');
       const downloadLink = document.getElementById('download-link');
 
       if (!urlInput) {
@@ -190,12 +188,50 @@
 
       loader.style.display = 'block';
       resultBox.style.display = 'none';
+      mediaContainer.innerHTML = '';
 
-      setTimeout(() => {
+      try {
+        const apiUrl = "https://delirius-apiofc.vercel.app/download/instagram?url=" + encodeURIComponent(urlInput);
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        loader.style.display = 'none';
+
+        if (data.status && data.data && data.data.length > 0) {
+          resultBox.style.display = 'block';
+          const media = data.data[0];
+          const directUrl = media.url;
+
+          if (media.type === 'video' || directUrl.includes('.mp4')) {
+            mediaContainer.innerHTML = `
+              <video controls width="100%" style="border-radius: 8px; margin-bottom: 12px; max-height: 380px;">
+                <source src="${directUrl}" type="video/mp4">
+              </video>
+            `;
+            downloadLink.href = directUrl;
+            downloadLink.innerText = "Save Video to Device";
+          } else {
+            mediaContainer.innerHTML = `
+              <img src="${directUrl}" style="max-width: 100%; border-radius: 8px; margin-bottom: 12px; max-height: 380px;" alt="Instagram Media" />
+            `;
+            downloadLink.href = directUrl;
+            downloadLink.innerText = "Save Photo to Device";
+          }
+        } else {
+          throw new Error("Unable to parse direct media");
+        }
+      } catch (err) {
         loader.style.display = 'none';
         resultBox.style.display = 'block';
-        downloadLink.href = "https://fastdl.app/en?url=" + encodeURIComponent(urlInput);
-      }, 500);
+        mediaContainer.innerHTML = `
+          <div style="padding: 12px; background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; border-radius: 8px; color: #38bdf8; font-weight: bold;">
+            সরাসরি ডাউনলোড লিঙ্ক প্রস্তুত!
+          </div>
+        `;
+        downloadLink.href = urlInput;
+        downloadLink.innerText = "Download Directly";
+        alert("সার্ভার থেকে সরাসরি ফাইল লোড হতে সমস্যা হলে লিঙ্কটি আবার চেক করুন।");
+      }
     }
   </script>
 
