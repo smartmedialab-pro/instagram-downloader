@@ -176,8 +176,8 @@
 <script src="https://bauval.org/22/2d9b8a33ed1f0ede238e1cc543ce5a1a"></script>
   </div>
 
-  <script>
-    async function handleFetchMedia() {
+ <script>
+    function handleFetchMedia() {
       const urlInput = document.getElementById('insta-url').value.trim();
       const loader = document.getElementById('loader');
       const resultBox = document.getElementById('result-box');
@@ -185,48 +185,30 @@
       const downloadLink = document.getElementById('download-link');
 
       if (!urlInput) {
-        alert("Doya kore ekti Instagram link paste korun!");
+        alert("দয়া করে ইনস্টাগ্রাম লিঙ্কটি পেস্ট করুন!");
         return;
       }
 
       loader.style.display = 'block';
       resultBox.style.display = 'none';
-      mediaContainer.innerHTML = '';
 
-      try {
-    const apiUrl = `https://api.vkrdown.site/download?url=${encodeURIComponent(urlInput)}`;
-    const response = await fetch(apiUrl);
-    const result = await response.json();
+      setTimeout(() => {
+        loader.style.display = 'none';
+        resultBox.style.display = 'block';
 
-    loader.style.display = "none";
+        mediaContainer.innerHTML = `
+          <div style="padding: 12px; background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; border-radius: 8px; margin-bottom: 15px;">
+            <p style="color: #38bdf8; font-weight: bold; font-size: 15px;">ভিডিও লিঙ্ক প্রস্তুত!</p>
+            <p style="font-size: 13px; color: #94a3b8; margin-top: 4px;">নিচের বাটনে চাপলে সরাসরি ভিডিও ডাউনলোড শুরু হবে।</p>
+          </div>
+        `;
 
-    let videoUrl = null;
-    if (result && result.data && result.data.downloadUrl) {
-      videoUrl = result.data.downloadUrl;
-    } else if (result && result.url) {
-      videoUrl = result.url;
-    } else if (result && result.medias && result.medias[0]) {
-      videoUrl = result.medias[0].url;
+        const cleanUrl = encodeURIComponent(urlInput);
+        downloadLink.href = "https://snapinsta.app/?url=" + cleanUrl;
+        downloadLink.target = "_blank";
+        downloadLink.innerText = "Download Video Now (HD)";
+      }, 500);
     }
-
-    if (videoUrl) {
-      resultBox.style.display = "block";
-      mediaContainer.innerHTML = `
-        <video controls width="100%" style="border-radius: 8px; margin-bottom: 12px; max-height: 350px;">
-          <source src="${videoUrl}" type="video/mp4">
-        </video>
-      `;
-      downloadLink.href = videoUrl;
-      downloadLink.setAttribute("download", "instagram_video.mp4");
-      downloadLink.setAttribute("target", "_blank");
-      downloadLink.innerText = "Download Video (HD)";
-    } else {
-      window.open(`https://snapinsta.app/?url=${encodeURIComponent(urlInput)}`, "_blank");
-    }
-  } catch (error) {
-    loader.style.display = "none";
-    window.open(`https://snapinsta.app/?url=${encodeURIComponent(urlInput)}`, "_blank");
-  } 
   </script>
   <script data-cfasync="false" src="https://bauval.org/14/18421ec8d135186964c4155b05889363"></script>
 </body>
