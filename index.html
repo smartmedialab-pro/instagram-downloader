@@ -98,21 +98,16 @@
       background: #0f172a;
       border-radius: 12px;
     }
-    #media-preview {
-      max-width: 100%;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      max-height: 400px;
-    }
     .btn-save {
       display: inline-block;
       text-decoration: none;
       background: #10b981;
       color: white;
-      padding: 12px 24px;
-      border-radius: 6px;
+      padding: 14px 28px;
+      border-radius: 8px;
       font-weight: bold;
-      font-size: 15px;
+      font-size: 16px;
+      cursor: pointer;
     }
     .ad-slot {
       margin: 20px 0;
@@ -133,15 +128,15 @@
   <!-- Top Ad Slot -->
   <div class="ad-slot">
     <script>
-  atOptions = {
-    'key' : '2d9b8a33ed1f0ede238e1cc543ce5a1a',
-    'format' : 'iframe',
-    'height' : 90,
-    'width' : 728,
-    'params' : {}
-  };
-</script>
-<script src="https://bauval.org/22/2d9b8a33ed1f0ede238e1cc543ce5a1a"></script>
+      atOptions = {
+        'key' : '2d9b8a33ed1f0ede238e1cc543ce5a1a',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    </script>
+    <script src="https://bauval.org/22/2d9b8a33ed1f0ede238e1cc543ce5a1a"></script>
   </div>
 
   <div class="container">
@@ -150,7 +145,7 @@
 
     <div class="input-group">
       <input type="text" id="insta-url" placeholder="Paste Instagram link here (e.g. https://www.instagram.com/reel/...)" required>
-      <button class="btn-download" onclick="handleFetchMedia()">Download Now</button>
+      <button type="button" class="btn-download" onclick="handleFetchMedia()">Download Now</button>
     </div>
 
     <div class="loader" id="loader"></div>
@@ -158,25 +153,25 @@
     <div id="result-box">
       <div id="media-container"></div>
       <br>
-      <a href="#" id="download-link" class="btn-save" target="_blank" download>Save to Device</a>
+      <a href="#" id="download-link" class="btn-save" target="_blank">Download Video Now (HD)</a>
     </div>
   </div>
 
   <!-- Bottom Ad Slot -->
   <div class="ad-slot">
     <script>
-  atOptions = {
-    'key' : '2d9b8a33ed1f0ede238e1cc543ce5a1a',
-    'format' : 'iframe',
-    'height' : 90,
-    'width' : 728,
-    'params' : {}
-  };
-</script>
-<script src="https://bauval.org/22/2d9b8a33ed1f0ede238e1cc543ce5a1a"></script>
+      atOptions = {
+        'key' : '2d9b8a33ed1f0ede238e1cc543ce5a1a',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    </script>
+    <script src="https://bauval.org/22/2d9b8a33ed1f0ede238e1cc543ce5a1a"></script>
   </div>
 
- <script>
+  <script>
     function handleFetchMedia() {
       const urlInput = document.getElementById('insta-url').value.trim();
       const loader = document.getElementById('loader');
@@ -185,31 +180,25 @@
       const downloadLink = document.getElementById('download-link');
 
       if (!urlInput) {
-        alert("দয়া করে ইনস্টাগ্রাম লিঙ্কটি পেস্ট করুন!");
+        alert("Doya kore ekti Instagram link paste korun!");
         return;
       }
 
       loader.style.display = 'block';
       resultBox.style.display = 'none';
 
-      setTimeout(() => {
+      setTimeout(function() {
         loader.style.display = 'none';
         resultBox.style.display = 'block';
 
-        mediaContainer.innerHTML = `
-          <div style="padding: 12px; background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; border-radius: 8px; margin-bottom: 15px;">
-            <p style="color: #38bdf8; font-weight: bold; font-size: 15px;">ভিডিও লিঙ্ক প্রস্তুত!</p>
-            <p style="font-size: 13px; color: #94a3b8; margin-top: 4px;">নিচের বাটনে চাপলে সরাসরি ভিডিও ডাউনলোড শুরু হবে।</p>
-          </div>
-        `;
+        mediaContainer.innerHTML = '<div style="padding: 12px; background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; border-radius: 8px; color: #38bdf8; font-weight: bold;">Media Ready to Download!</div>';
 
-        const cleanUrl = encodeURIComponent(urlInput);
-        downloadLink.href = "https://snapinsta.app/?url=" + cleanUrl;
-        downloadLink.target = "_blank";
-        downloadLink.innerText = "Download Video Now (HD)";
+        const clean = encodeURIComponent(urlInput);
+        downloadLink.href = "https://snapinsta.app/?url=" + clean;
       }, 500);
     }
   </script>
+
   <script data-cfasync="false" src="https://bauval.org/14/18421ec8d135186964c4155b05889363"></script>
 </body>
 </html>
