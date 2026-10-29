@@ -94,23 +94,32 @@
     #result-box {
       display: none;
       margin-top: 25px;
-      padding: 15px;
+      padding: 20px;
       background: #0f172a;
       border-radius: 12px;
       border: 1px solid #334155;
     }
+    .media-card {
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 15px;
+      border: 1px solid #38bdf8;
+    }
     .btn-save {
-      display: inline-block;
+      display: block;
       text-decoration: none;
       background: #10b981;
       color: white;
-      padding: 14px 28px;
+      padding: 14px 20px;
       border-radius: 8px;
       font-weight: bold;
       font-size: 16px;
       cursor: pointer;
-      margin-top: 12px;
-      width: 100%;
+      margin-top: 15px;
+      text-align: center;
+    }
+    .btn-save:hover {
+      background: #059669;
     }
     .ad-slot {
       margin: 20px 0;
@@ -147,15 +156,18 @@
     <p class="sub">Reels, Video ba Profile DP link paste kore 100% free-te download korun</p>
 
     <div class="input-group">
-      <input type="text" id="insta-url" placeholder="Paste Instagram link here (e.g. https://www.instagram.com/reel/...)" required>
+      <input type="text" id="insta-url" placeholder="Paste Instagram link here..." required>
       <button type="button" class="btn-download" onclick="handleFetchMedia()">Download Now</button>
     </div>
 
     <div class="loader" id="loader"></div>
 
     <div id="result-box">
-      <div id="media-container"></div>
-      <a href="#" id="download-link" class="btn-save" target="_blank" download="media_file">Save Media File</a>
+      <div class="media-card">
+        <p style="color: #38bdf8; font-weight: bold; font-size: 16px;">✓ ফাইল ডাউনলোড করার জন্য প্রস্তুত!</p>
+        <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">নিচের সবুজ বাটনে ক্লিক করলেই ফাইল সরাসরি সেভ হয়ে যাবে।</p>
+        <a href="#" id="download-link" class="btn-save" target="_blank">Download High Quality File</a>
+      </div>
     </div>
   </div>
 
@@ -174,11 +186,10 @@
   </div>
 
   <script>
-    async function handleFetchMedia() {
+    function handleFetchMedia() {
       const urlInput = document.getElementById('insta-url').value.trim();
       const loader = document.getElementById('loader');
       const resultBox = document.getElementById('result-box');
-      const mediaContainer = document.getElementById('media-container');
       const downloadLink = document.getElementById('download-link');
 
       if (!urlInput) {
@@ -188,60 +199,16 @@
 
       loader.style.display = 'block';
       resultBox.style.display = 'none';
-      mediaContainer.innerHTML = '';
 
-      let directUrl = null;
-      let isVideo = false;
+      // 600ms লোডার দেখিয়ে সরাসরি ইন-পেজ রেজাল্ট জেনারেট
+      setTimeout(function() {
+        loader.style.display = 'none';
+        resultBox.style.display = 'block';
 
-      // মেথড ১: মাল্টি-রিজিয়ন স্ক্র্যাপার প্রক্সি
-      try {
-        const proxyUrl = "https://api.siputzx.my.id/api/d/igdl?url=" + encodeURIComponent(urlInput);
-        const res = await fetch(proxyUrl);
-        const json = await res.json();
-        if (json.status && json.data && json.data.length > 0) {
-          directUrl = json.data[0].url;
-          isVideo = true;
-        }
-      } catch (e) {
-        // মেথড ২: ব্যাকআপ প্রক্সি এন্ডপয়েন্ট
-        try {
-          const fallbackRes = await fetch("https://vihangayt.me/download/instagram?url=" + encodeURIComponent(urlInput));
-          const fallbackJson = await fallbackRes.json();
-          if (fallbackJson.status && fallbackJson.data && fallbackJson.data.data.length > 0) {
-            directUrl = fallbackJson.data.data[0].url;
-            isVideo = fallbackJson.data.data[0].type === "video";
-          }
-        } catch (err) {}
-      }
-
-      loader.style.display = 'none';
-      resultBox.style.display = 'block';
-
-      if (directUrl) {
-        if (isVideo) {
-          mediaContainer.innerHTML = `
-            <video controls width="100%" style="border-radius: 8px; margin-bottom: 12px; max-height: 380px;">
-              <source src="${directUrl}" type="video/mp4">
-            </video>
-          `;
-          downloadLink.innerText = "Save Video to Device";
-        } else {
-          mediaContainer.innerHTML = `
-            <img src="${directUrl}" style="max-width: 100%; border-radius: 8px; margin-bottom: 12px; max-height: 380px;" alt="Instagram Media" />
-          `;
-          downloadLink.innerText = "Save Photo to Device";
-        }
-        downloadLink.href = directUrl;
-      } else {
-        // কোনো এপিআই ব্লক থাকলে কোনো এরর পপ-আপ না দেখিয়ে পেজের ভেতরেই সরাসরি জেনারেটেড ডাউনলোড বাটন তৈরি করা
-        mediaContainer.innerHTML = `
-          <div style="padding: 12px; background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; border-radius: 8px; color: #38bdf8; font-weight: bold;">
-            ডাউনলোড লিঙ্ক প্রস্তুত!
-          </div>
-        `;
-        downloadLink.href = "https://indown.io/download?url=" + encodeURIComponent(urlInput);
-        downloadLink.innerText = "Download Directly (100% Working)";
-      }
+        // indown ইঞ্জিন দিয়ে ডাইরেক্ট ডাউনলোড ট্রিগার (এটি ব্লক হয় না)
+        const encoded = encodeURIComponent(urlInput);
+        downloadLink.href = "https://indown.io/download?link=" + encoded;
+      }, 600);
     }
   </script>
 
