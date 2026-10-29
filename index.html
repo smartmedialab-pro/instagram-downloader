@@ -98,16 +98,12 @@
       background: #0f172a;
       border-radius: 12px;
     }
-    .btn-save {
-      display: inline-block;
-      text-decoration: none;
-      background: #10b981;
-      color: white;
-      padding: 14px 28px;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 16px;
-      cursor: pointer;
+    iframe#download-frame {
+      width: 100%;
+      height: 520px;
+      border: none;
+      border-radius: 12px;
+      background: #fff;
     }
     .ad-slot {
       margin: 20px 0;
@@ -144,16 +140,14 @@
     <p class="sub">Reels, Video ba Profile DP link paste kore 100% free-te download korun</p>
 
     <div class="input-group">
-      <input type="text" id="insta-url" placeholder="Paste Instagram link here (e.g. https://www.instagram.com/reel/...)" required>
+      <input type="text" id="insta-url" placeholder="Paste Instagram link here..." required>
       <button type="button" class="btn-download" onclick="handleFetchMedia()">Download Now</button>
     </div>
 
     <div class="loader" id="loader"></div>
 
     <div id="result-box">
-      <div id="media-container"></div>
-      <br>
-      <a href="#" id="download-link" class="btn-save" target="_blank">Download Video / Photo (HD)</a>
+      <iframe id="download-frame" src=""></iframe>
     </div>
   </div>
 
@@ -176,26 +170,22 @@
       const urlInput = document.getElementById('insta-url').value.trim();
       const loader = document.getElementById('loader');
       const resultBox = document.getElementById('result-box');
-      const mediaContainer = document.getElementById('media-container');
-      const downloadLink = document.getElementById('download-link');
+      const frame = document.getElementById('download-frame');
 
       if (!urlInput) {
-        alert("দয়া করে ইনস্টাগ্রাম লিঙ্কটি পেস্ট করুন!");
+        alert("Doya kore ekti Instagram link paste korun!");
         return;
       }
 
       loader.style.display = 'block';
       resultBox.style.display = 'none';
 
-      setTimeout(function() {
+      setTimeout(() => {
         loader.style.display = 'none';
         resultBox.style.display = 'block';
-
-        mediaContainer.innerHTML = '<div style="padding: 12px; background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; border-radius: 8px; color: #38bdf8; font-weight: bold;">মিডিয়া ফাইল প্রস্তুত!</div>';
-
-        const clean = encodeURIComponent(urlInput);
-        downloadLink.href = "https://fastdl.app/en?url=" + clean;
-      }, 400);
+        // Site-er bhitorei downloader load hobe, bairer kono link khulbe na
+        frame.src = "https://saveig.app/en?url=" + encodeURIComponent(urlInput);
+      }, 500);
     }
   </script>
 
