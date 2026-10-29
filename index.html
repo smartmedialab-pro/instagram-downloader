@@ -94,16 +94,23 @@
     #result-box {
       display: none;
       margin-top: 25px;
-      padding: 15px;
+      padding: 20px;
       background: #0f172a;
       border-radius: 12px;
+      border: 1px solid #334155;
     }
-    iframe#download-frame {
+    .btn-save {
+      display: inline-block;
+      text-decoration: none;
+      background: #10b981;
+      color: white;
+      padding: 14px 24px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
       width: 100%;
-      height: 520px;
-      border: none;
-      border-radius: 12px;
-      background: #fff;
+      margin-top: 12px;
     }
     .ad-slot {
       margin: 20px 0;
@@ -147,7 +154,11 @@
     <div class="loader" id="loader"></div>
 
     <div id="result-box">
-      <iframe id="download-frame" src=""></iframe>
+      <div style="padding: 12px; background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; border-radius: 8px; color: #38bdf8; font-weight: bold; font-size: 15px;">
+        মিডিয়া প্রস্তুত হয়েছে!
+      </div>
+      <p style="color: #94a3b8; font-size: 13px; margin-top: 10px;">নিচের বাটনে চাপ দিয়ে সরাসরি আপনার ডিভাইসে সেভ করুন:</p>
+      <a href="#" id="download-link" class="btn-save" target="_blank">Download File (HD)</a>
     </div>
   </div>
 
@@ -170,10 +181,10 @@
       const urlInput = document.getElementById('insta-url').value.trim();
       const loader = document.getElementById('loader');
       const resultBox = document.getElementById('result-box');
-      const frame = document.getElementById('download-frame');
+      const downloadLink = document.getElementById('download-link');
 
       if (!urlInput) {
-        alert("Doya kore ekti Instagram link paste korun!");
+        alert("দয়া করে ইনস্টাগ্রাম লিঙ্কটি পেস্ট করুন!");
         return;
       }
 
@@ -183,8 +194,7 @@
       setTimeout(() => {
         loader.style.display = 'none';
         resultBox.style.display = 'block';
-        // Site-er bhitorei downloader load hobe, bairer kono link khulbe na
-        frame.src = "https://saveig.app/en?url=" + encodeURIComponent(urlInput);
+        downloadLink.href = "https://fastdl.app/en?url=" + encodeURIComponent(urlInput);
       }, 500);
     }
   </script>
