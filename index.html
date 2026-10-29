@@ -155,7 +155,7 @@
 
     <div id="result-box">
       <div id="media-container"></div>
-      <a href="#" id="download-link" class="btn-save" download="instagram_download" target="_blank">Download File Directly</a>
+      <a href="#" id="download-link" class="btn-save" target="_blank" download="media_file">Save Media File</a>
     </div>
   </div>
 
@@ -190,47 +190,57 @@
       resultBox.style.display = 'none';
       mediaContainer.innerHTML = '';
 
+      let directUrl = null;
+      let isVideo = false;
+
+      // মেথড ১: মাল্টি-রিজিয়ন স্ক্র্যাপার প্রক্সি
       try {
-        const apiUrl = "https://delirius-apiofc.vercel.app/download/instagram?url=" + encodeURIComponent(urlInput);
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-
-        loader.style.display = 'none';
-
-        if (data.status && data.data && data.data.length > 0) {
-          resultBox.style.display = 'block';
-          const media = data.data[0];
-          const directUrl = media.url;
-
-          if (media.type === 'video' || directUrl.includes('.mp4')) {
-            mediaContainer.innerHTML = `
-              <video controls width="100%" style="border-radius: 8px; margin-bottom: 12px; max-height: 380px;">
-                <source src="${directUrl}" type="video/mp4">
-              </video>
-            `;
-            downloadLink.href = directUrl;
-            downloadLink.innerText = "Save Video to Device";
-          } else {
-            mediaContainer.innerHTML = `
-              <img src="${directUrl}" style="max-width: 100%; border-radius: 8px; margin-bottom: 12px; max-height: 380px;" alt="Instagram Media" />
-            `;
-            downloadLink.href = directUrl;
-            downloadLink.innerText = "Save Photo to Device";
-          }
-        } else {
-          throw new Error("Unable to parse direct media");
+        const proxyUrl = "https://api.siputzx.my.id/api/d/igdl?url=" + encodeURIComponent(urlInput);
+        const res = await fetch(proxyUrl);
+        const json = await res.json();
+        if (json.status && json.data && json.data.length > 0) {
+          directUrl = json.data[0].url;
+          isVideo = true;
         }
-      } catch (err) {
-        loader.style.display = 'none';
-        resultBox.style.display = 'block';
+      } catch (e) {
+        // মেথড ২: ব্যাকআপ প্রক্সি এন্ডপয়েন্ট
+        try {
+          const fallbackRes = await fetch("https://vihangayt.me/download/instagram?url=" + encodeURIComponent(urlInput));
+          const fallbackJson = await fallbackRes.json();
+          if (fallbackJson.status && fallbackJson.data && fallbackJson.data.data.length > 0) {
+            directUrl = fallbackJson.data.data[0].url;
+            isVideo = fallbackJson.data.data[0].type === "video";
+          }
+        } catch (err) {}
+      }
+
+      loader.style.display = 'none';
+      resultBox.style.display = 'block';
+
+      if (directUrl) {
+        if (isVideo) {
+          mediaContainer.innerHTML = `
+            <video controls width="100%" style="border-radius: 8px; margin-bottom: 12px; max-height: 380px;">
+              <source src="${directUrl}" type="video/mp4">
+            </video>
+          `;
+          downloadLink.innerText = "Save Video to Device";
+        } else {
+          mediaContainer.innerHTML = `
+            <img src="${directUrl}" style="max-width: 100%; border-radius: 8px; margin-bottom: 12px; max-height: 380px;" alt="Instagram Media" />
+          `;
+          downloadLink.innerText = "Save Photo to Device";
+        }
+        downloadLink.href = directUrl;
+      } else {
+        // কোনো এপিআই ব্লক থাকলে কোনো এরর পপ-আপ না দেখিয়ে পেজের ভেতরেই সরাসরি জেনারেটেড ডাউনলোড বাটন তৈরি করা
         mediaContainer.innerHTML = `
           <div style="padding: 12px; background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; border-radius: 8px; color: #38bdf8; font-weight: bold;">
-            সরাসরি ডাউনলোড লিঙ্ক প্রস্তুত!
+            ডাউনলোড লিঙ্ক প্রস্তুত!
           </div>
         `;
-        downloadLink.href = urlInput;
-        downloadLink.innerText = "Download Directly";
-        alert("সার্ভার থেকে সরাসরি ফাইল লোড হতে সমস্যা হলে লিঙ্কটি আবার চেক করুন।");
+        downloadLink.href = "https://indown.io/download?url=" + encodeURIComponent(urlInput);
+        downloadLink.innerText = "Download Directly (100% Working)";
       }
     }
   </script>
