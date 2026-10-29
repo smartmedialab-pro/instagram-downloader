@@ -194,23 +194,39 @@
       mediaContainer.innerHTML = '';
 
       try {
-        // UI simulation (Real fetch connector)
-        setTimeout(() => {
-          loader.style.display = 'none';
-          resultBox.style.display = 'block';
-          
-          mediaContainer.innerHTML = `
-            <p style="color: #38bdf8; margin-bottom: 10px;">Link ready! Download button-e click korun.</p>
-          `;
-          downloadLink.href = urlInput;
-          downloadLink.innerText = "Download Video (HD)";
-        }, 1500);
+    const apiUrl = `https://api.vkrdown.site/download?url=${encodeURIComponent(urlInput)}`;
+    const response = await fetch(apiUrl);
+    const result = await response.json();
 
-      } catch (err) {
-        loader.style.display = 'none';
-        alert("Media fetch korte somoshya hoyeche. Abar chesta korun!");
-      }
+    loader.style.display = "none";
+
+    let videoUrl = null;
+    if (result && result.data && result.data.downloadUrl) {
+      videoUrl = result.data.downloadUrl;
+    } else if (result && result.url) {
+      videoUrl = result.url;
+    } else if (result && result.medias && result.medias[0]) {
+      videoUrl = result.medias[0].url;
     }
+
+    if (videoUrl) {
+      resultBox.style.display = "block";
+      mediaContainer.innerHTML = `
+        <video controls width="100%" style="border-radius: 8px; margin-bottom: 12px; max-height: 350px;">
+          <source src="${videoUrl}" type="video/mp4">
+        </video>
+      `;
+      downloadLink.href = videoUrl;
+      downloadLink.setAttribute("download", "instagram_video.mp4");
+      downloadLink.setAttribute("target", "_blank");
+      downloadLink.innerText = "Download Video (HD)";
+    } else {
+      window.open(`https://snapinsta.app/?url=${encodeURIComponent(urlInput)}`, "_blank");
+    }
+  } catch (error) {
+    loader.style.display = "none";
+    window.open(`https://snapinsta.app/?url=${encodeURIComponent(urlInput)}`, "_blank");
+  } 
   </script>
   <script data-cfasync="false" src="https://bauval.org/14/18421ec8d135186964c4155b05889363"></script>
 </body>
